@@ -49,3 +49,38 @@ sampleresult <- tibble(
 
 #write to file
 write_csv(sampleresult, "sampleresult.csv")
+
+
+
+#...................................
+
+#experiment with getting targeting broken down further - end of line regex ####
+
+# https://stackoverflow.com/questions/830855/what-regex-would-capture-everything-from-mark-to-the-end-of-a-line
+
+# (?<=MYCHAR).*$
+gsub("Age.*", "", text)
+text
+
+#to visually see regex matching
+# https://r4ds.had.co.nz/strings.html
+str_view(text, "Age.*")
+
+str_subset(text, "Age.*")
+
+#yes! This appears to do it. Pulling until end of line.
+str_extract(text, "Age.*")
+
+str_extract(text, "Language.*")
+str_extract(text, "Location.*")
+str_extract(text, "Excluded Connections.*")
+
+#since this one goes beyond just one line, it gets cut off 
+str_extract(text, "Placement.*")
+
+
+sample2 <- tibble(
+  target_age = str_trim(str_remove(str_extract(text, "Age.*"), "Age:")),
+  target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
+  target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:"))
+  )
