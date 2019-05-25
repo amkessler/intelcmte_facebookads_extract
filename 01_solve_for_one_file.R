@@ -113,3 +113,6 @@ sampleresults_combined <- tibble(
 )
 
 sampleresults_combined
+
+#write to file
+write_csv(sampleresults_combined, "sampleresults_combined.csv")
