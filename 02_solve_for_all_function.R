@@ -18,7 +18,8 @@ extractmydata <- function(myfile) {
     ad_impressions = str_trim(gsub(".*Ad Impressions\\s*|Ad Clicks.*", "", text)),
     ad_clicks = str_trim(gsub(".*Ad Clicks\\s*|Ad Spend.*", "", text)),
     ad_spend = str_trim(gsub(".*Ad Spend\\s*|Ad Creation.*", "", text)),
-    ad_creation_date = str_trim(gsub(".*Ad Creation Date\\s*|Redactions.*", "", text)),
+    ad_creation_date = str_trim(gsub(".*Ad Creation Date\\s*|Ad End Date.*", "", text)),
+    ad_end_date = str_trim(gsub(".*Ad End Date\\s*|Redactions.*", "", text)),
     target_age = str_trim(str_remove(str_extract(text, "Age.*"), "Age:")),
     target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
     target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:")),
@@ -45,6 +46,8 @@ allfiles
 # run a purrr map function (ie looping) to apply our processing to every file
 map_df(allfiles, extractmydata)
 
+# save results into new dataframe
+myresults <- map_df(allfiles, extractmydata)
 
 #write to file
 # write_csv(sampleresults_combined, "sampleresults_combined.csv")
