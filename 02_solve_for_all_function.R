@@ -49,4 +49,4 @@ map_df(allfiles, extractmydata)
 myresults <- map_df(allfiles, extractmydata)
 
 #write to file
-# write_csv(sampleresults_combined, "sampleresults_combined.csv")
+write_csv(myresults, "myresults.csv")
