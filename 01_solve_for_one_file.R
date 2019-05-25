@@ -1,9 +1,10 @@
+# source of pdf files:
 # https://intelligence.house.gov/social-media-content/social-media-advertisements.htm
 
 library(pdftools)
 library(tidyverse)
 
-myfile <- "pdfs/P0004855.pdf"
+myfile <- "pdfs/P10004855.pdf"
 
 text <- pdf_text(myfile)[1]
 
@@ -15,9 +16,10 @@ cat(txt[1])
 
 # All textboxes on page 1 - doesn't seem to help here
 textboxes <- pdf_data(myfile)[[1]]
+textboxes
 
 
-##extract between two words using gsub and regex
+##extract between two words using gsub and regex ####
 
 text
 
@@ -47,6 +49,8 @@ sampleresult <- tibble(
   ad_targeting = str_squish(gsub(".*Ad Targeting\\s*|Ad Impressions.*", "", text))
 )
 
+sampleresult
+
 #write to file
 write_csv(sampleresult, "sampleresult.csv")
 
@@ -71,6 +75,7 @@ str_subset(text, "Age.*")
 #yes! This appears to do it. Pulling until end of line.
 str_extract(text, "Age.*")
 
+#Applying to other variations
 str_extract(text, "Language.*")
 str_extract(text, "Location.*")
 str_extract(text, "Excluded Connections.*")
@@ -84,3 +89,27 @@ sample2 <- tibble(
   target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
   target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:"))
   )
+
+sample2
+
+
+### Combining everything together ####
+# plus adding some new fields
+
+
+sampleresults_combined <- tibble(
+  ad_id = str_trim(gsub(".*Ad ID\\s*|Ad Text.*", "", text)),
+  ad_text = str_trim(gsub(".*Ad Text\\s*|Ad Landing.*", "", text)),
+  ad_landing_page = str_trim(gsub(".*Ad Landing Page\\s*|Ad Targeting.*", "", text)),
+  ad_impressions = str_trim(gsub(".*Ad Impressions\\s*|Ad Clicks.*", "", text)),
+  ad_clicks = str_trim(gsub(".*Ad Clicks\\s*|Ad Spend.*", "", text)),
+  ad_spend = str_trim(gsub(".*Ad Spend\\s*|Ad Creation.*", "", text)),
+  ad_creation_date = str_trim(gsub(".*Ad Creation Date\\s*|Redactions.*", "", text)),
+  target_age = str_trim(str_remove(str_extract(text, "Age.*"), "Age:")),
+  target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
+  target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:")),
+  target_pplwhomatch = str_trim(gsub(".*People Who Match\\s*|Ad Impressions.*", "", text)),
+  ad_targeting_fulltext = str_squish(gsub(".*Ad Targeting\\s*|Ad Impressions.*", "", text))
+)
+
+sampleresults_combined
