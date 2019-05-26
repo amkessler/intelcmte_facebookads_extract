@@ -33,7 +33,7 @@ extractmydata <- function(myfile) {
   }
 
 # run the function on a single pdf
-# extractmydata("pdfs/P10004855.pdf")
+extractmydata("pdfs/P(1)0000001.pdf")
 
 # success!
 
@@ -42,7 +42,7 @@ extractmydata <- function(myfile) {
 
 # get a list of all the files in the pdfs directory
 allfiles <- list.files("./pdfs", full.names = TRUE)
-
+allfiles
 
 # run a purrr map function (ie looping) to apply our processing to every file
 # map_df(allfiles, extractmydata)
