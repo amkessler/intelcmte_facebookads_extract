@@ -82,7 +82,10 @@ myresults_formatted <- myresults %>%
   mutate(
     ad_impressions = parse_number(ad_impressions), #use readr's parse_number to handle commas in text
     ad_clicks = parse_number(ad_clicks),
-    ad_creation_date = mdy_hms(ad_creation_date)
+    ad_creation_date = mdy_hms(ad_creation_date),
+    ad_creation_year = year(ad_creation_date),
+    ad_creation_month = month(ad_creation_date),
+    ad_creation_day = day(ad_creation_date)
   )
 
 #handle ocassional "None" in ad spend instead of a zero/blank
@@ -101,9 +104,10 @@ myresults_formatted <- myresults_formatted %>%
     ad_spend = parse_number(ad_spend)
   )
 
-# move currency column next to ad spend
+# move currency column next to ad spend, year month and day next to date
 myresults_formatted <- myresults_formatted %>% 
-  select(1:7, currency, everything())
+  select(1:7, currency, ad_creation_date, ad_creation_year, ad_creation_month,
+        ad_creation_day, everything())
 
 #write to file
 write_csv(myresults_formatted, "myresults_formatted.csv")
