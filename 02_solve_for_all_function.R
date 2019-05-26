@@ -12,6 +12,7 @@ extractmydata <- function(myfile) {
   text <- pdf_text(myfile)[1]
   
   df <- tibble(
+    document_name = myfile,
     ad_id = str_trim(gsub(".*Ad ID\\s*|Ad Text.*", "", text)),
     ad_text = str_trim(gsub(".*Ad Text\\s*|Ad Landing.*", "", text)),
     ad_landing_page = str_trim(gsub(".*Ad Landing Page\\s*|Ad Targeting.*", "", text)),
@@ -26,12 +27,13 @@ extractmydata <- function(myfile) {
     ad_targeting_fulltext = str_squish(gsub(".*Ad Targeting\\s*|Ad Impressions.*", "", text))
     )
   
+  print(myfile)
   return(df) 
 
   }
 
 # run the function on a single pdf
-extractmydata("pdfs/P10004855.pdf")
+# extractmydata("pdfs/P10004855.pdf")
 
 # success!
 
@@ -40,10 +42,10 @@ extractmydata("pdfs/P10004855.pdf")
 
 # get a list of all the files in the pdfs directory
 allfiles <- list.files("./pdfs", full.names = TRUE)
-allfiles
+
 
 # run a purrr map function (ie looping) to apply our processing to every file
-map_df(allfiles, extractmydata)
+# map_df(allfiles, extractmydata)
 
 # save results into new dataframe
 myresults <- map_df(allfiles, extractmydata)
