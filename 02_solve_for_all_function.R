@@ -14,16 +14,31 @@ extractmydata <- function(myfile) {
   df <- tibble(
     document_name = myfile,
     ad_id = str_trim(gsub(".*Ad ID\\s*|Ad Text.*", "", text)),
-    ad_text = str_trim(gsub(".*Ad Text\\s*|Ad Landing.*", "", text)),
+    ad_text = if_else(
+      str_detect(text, "Ad Text"),
+      str_trim(gsub(".*Ad Text\\s*|Ad Landing.*", "", text)),
+      "None"),
     ad_landing_page = str_trim(gsub(".*Ad Landing Page\\s*|Ad Targeting.*", "", text)),
-    ad_impressions = str_trim(gsub(".*Ad Impressions\\s*|Ad Clicks.*", "", text)),
-    ad_clicks = str_trim(gsub(".*Ad Clicks\\s*|Ad Spend.*", "", text)),
-    ad_spend = str_trim(gsub(".*Ad Spend\\s*|Ad Creation.*", "", text)),
+    ad_impressions = if_else(
+      str_detect(text, "Ad Impressions"),
+      str_trim(gsub(".*Ad Impressions\\s*|Ad Clicks.*", "", text)),
+      ""),
+    ad_clicks = if_else(
+      str_detect(text, "Ad Clicks"),
+      str_trim(gsub(".*Ad Clicks\\s*|Ad Spend.*", "", text)),
+      ""),
+    ad_spend = if_else(
+      str_detect(text, "Ad Spend"),
+      str_trim(gsub(".*Ad Spend\\s*|Ad Creation.*", "", text)),
+      ""),
     ad_creation_date = str_squish(gsub(".*Ad Creation Date\\s*|Redactions.*", "", text)),
     target_age = str_trim(str_remove(str_extract(text, "Age.*"), "Age:")),
     target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
     target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:")),
-    target_pplwhomatch = str_trim(gsub(".*People Who Match\\s*|Ad Impressions.*", "", text)),
+    target_pplwhomatch = if_else(
+      str_detect(text, "People Who Match"),
+      str_trim(gsub(".*People Who Match\\s*|Ad Impressions.*", "", text)),
+      "None"),
     ad_targeting_fulltext = str_squish(gsub(".*Ad Targeting\\s*|Ad Impressions.*", "", text))
     )
   
