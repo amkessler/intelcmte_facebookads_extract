@@ -32,7 +32,7 @@ extractmydata <- function(myfile) {
       str_detect(text, "Ad Spend"),
       str_trim(gsub(".*Ad Spend\\s*|Ad Creation.*", "", text)),
       ""),
-    ad_creation_date = str_squish(gsub(".*Ad Creation Date\\s*|Redactions.*", "", text)),
+    ad_creation_date = str_squish(gsub(".*Ad Creation Date\\s*|P.*", "", text)), #stop at the P in PST/PDT
     target_age = str_trim(str_remove(str_extract(text, "Age.*"), "Age:")),
     target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
     target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:")),
