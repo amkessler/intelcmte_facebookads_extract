@@ -3,6 +3,8 @@
 
 library(pdftools)
 library(tidyverse)
+library(janitor)
+library(lubridate)
 
 
 # function to handle processing of extracting from the pdf file
@@ -68,3 +70,40 @@ myresults <- map_df(allfiles, extractmydata)
 
 #write to file
 write_csv(myresults, "myresults.csv")
+
+
+
+### now we'll clean up some formatting of the results data ####
+
+glimpse(myresults)
+
+#convert impressions and clicks to numberic, creation date to date format 
+myresults_formatted <- myresults %>% 
+  mutate(
+    ad_impressions = parse_number(ad_impressions), #use readr's parse_number to handle commas in text
+    ad_clicks = parse_number(ad_clicks),
+    ad_creation_date = mdy_hms(ad_creation_date)
+  )
+
+#handle ocassional "None" in ad spend instead of a zero/blank
+myresults_formatted <- myresults_formatted %>% 
+  mutate(
+    ad_spend = str_replace(ad_spend, "None", "")
+  )
+
+# pull currency and ad spend work
+currency_vector <- str_extract(myresults_formatted$ad_spend, "RUB")
+
+myresults_formatted <- myresults_formatted %>% 
+  mutate(
+    currency = currency_vector,
+    ad_spend = str_replace(ad_spend, "RUB", ""),
+    ad_spend = parse_number(ad_spend)
+  )
+
+# move currency column next to ad spend
+myresults_formatted <- myresults_formatted %>% 
+  select(1:7, currency, everything())
+
+#write to file
+write_csv(myresults_formatted, "myresults_formatted.csv")
