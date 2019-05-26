@@ -13,7 +13,8 @@ extractmydata <- function(myfile) {
   
   df <- tibble(
     document_name = myfile,
-    ad_id = str_trim(gsub(".*Ad ID\\s*|Ad Text.*", "", text)),
+    # ad_id = str_trim(gsub(".*Ad ID\\s*|Ad Text.*", "", text)),
+    ad_id = str_trim(str_remove(str_extract(text, "Ad ID.*"), "Ad ID")),
     ad_text = if_else(
       str_detect(text, "Ad Text"),
       str_trim(gsub(".*Ad Text\\s*|Ad Landing.*", "", text)),
