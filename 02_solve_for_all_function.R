@@ -20,7 +20,7 @@ extractmydata <- function(myfile) {
     ad_text = if_else(
       str_detect(text, "Ad Text"),
       str_trim(gsub(".*Ad Text\\s*|Ad Landing.*", "", text)),
-      "None"),
+      ""),
     ad_landing_page = str_trim(gsub(".*Ad Landing Page\\s*|Ad Targeting.*", "", text)),
     ad_impressions = if_else(
       str_detect(text, "Ad Impressions"),
@@ -45,7 +45,7 @@ extractmydata <- function(myfile) {
     target_pplwhomatch = if_else(
       str_detect(text, "People Who Match"),
       str_trim(gsub(".*People Who Match\\s*|Ad Impressions.*", "", text)),
-      "None"),
+      ""),
     ad_targeting_fulltext = str_squish(gsub(".*Ad Targeting\\s*|Ad Impressions.*", "", text))
     )
   
