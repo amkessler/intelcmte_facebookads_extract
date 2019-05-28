@@ -119,3 +119,6 @@ myresults_formatted <- myresults_formatted %>%
 
 #write to file
 write_csv(myresults_formatted, "myresults_formatted.csv")
+
+#write to RDS file
+saveRDS(myresults_formatted, "myresults_formatted.rds")
