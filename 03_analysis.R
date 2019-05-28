@@ -12,7 +12,7 @@ library(lubridate)
 
 
 # bring in the results data 
-data <- readRDS("myresults_formatted.rds")
+data <- readRDS("myresults_formatted_all.rds")
 
 
 # check if formatted dataset came in successfully
@@ -35,10 +35,23 @@ data %>%
   count(target_pplwhomatch) %>% 
   arrange(desc(n))
 
+#looking at ads by date
 data %>% 
   count(ad_creation_year) %>% 
   arrange(desc(n))
 
 data %>% 
   count(ad_creation_year, ad_creation_month) %>% 
+  arrange(ad_creation_year, ad_creation_month)
+
+#bringing in sum of ad spend
+data %>% 
+  group_by(ad_creation_year, ad_creation_month) %>% 
+  summarise(num_ads = n(), sum_amount = sum(ad_spend, na.rm = TRUE)) %>% 
+  arrange(ad_creation_year, ad_creation_month)
+
+#sum of impressions
+data %>% 
+  group_by(ad_creation_year, ad_creation_month) %>% 
+  summarise(num_ads = n(), sum_amount = sum(ad_impressions, na.rm = TRUE)) %>% 
   arrange(ad_creation_year, ad_creation_month)
