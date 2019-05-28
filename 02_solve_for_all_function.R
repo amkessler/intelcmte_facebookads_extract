@@ -35,6 +35,10 @@ extractmydata <- function(myfile) {
       str_trim(gsub(".*Ad Spend\\s*|Ad Creation.*", "", text)),
       ""),
     ad_creation_date = str_squish(gsub(".*Ad Creation Date\\s*|P.*", "", text)), #stop at the P in PST/PDT
+    ad_end_date = if_else(
+      str_detect(text, "Ad End Date"),
+      str_squish(gsub(".*Ad End Date\\s*|P.*", "", text)), #stop at the P in PST/PDT
+      ""),
     target_age = str_trim(str_remove(str_extract(text, "Age.*"), "Age:")),
     target_location = str_trim(str_remove(str_extract(text, "Location.*"), "Location -")),
     target_language = str_trim(str_remove(str_extract(text, "Language.*"), "Language:")),
@@ -85,7 +89,8 @@ myresults_formatted <- myresults %>%
     ad_creation_date = mdy_hms(ad_creation_date),
     ad_creation_year = year(ad_creation_date),
     ad_creation_month = month(ad_creation_date),
-    ad_creation_day = day(ad_creation_date)
+    ad_creation_day = day(ad_creation_date),
+    ad_end_date = mdy_hms(ad_end_date)
   )
 
 #handle ocassional "None" in ad spend instead of a zero/blank
