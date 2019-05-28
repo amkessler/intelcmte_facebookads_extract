@@ -11,7 +11,7 @@ library(lubridate)
 # source("02_solve_for_all_function.R")
 
 
-# bring in the results data
+# bring in the results data 
 data <- readRDS("myresults_formatted.rds")
 
 
@@ -20,3 +20,25 @@ data
 
 # see characteristics of the data columns
 glimpse(data)
+
+
+### let's do some initial aggregate counts
+data %>% 
+  count(target_age) %>% 
+  arrange(desc(n))
+
+data %>% 
+  count(target_location) %>% 
+  arrange(desc(n))
+
+data %>% 
+  count(target_pplwhomatch) %>% 
+  arrange(desc(n))
+
+data %>% 
+  count(ad_creation_year) %>% 
+  arrange(desc(n))
+
+data %>% 
+  count(ad_creation_year, ad_creation_month) %>% 
+  arrange(ad_creation_year, ad_creation_month)
