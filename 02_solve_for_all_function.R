@@ -92,7 +92,8 @@ myresults_formatted <- myresults %>%
     ad_creation_month = month(ad_creation_date),
     ad_creation_day = day(ad_creation_date),
     ad_end_date = mdy_hms(ad_end_date),
-    document_name = str_sub(document_name, 8, 50)
+    document_name = str_sub(document_name, 8, 50),
+    target_pplwhomatch = str_remove(target_pplwhomatch, ": ")
   )
 
 #handle ocassional "None" in ad spend instead of a zero/blank
