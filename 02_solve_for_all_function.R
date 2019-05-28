@@ -81,7 +81,8 @@ write_csv(myresults, "myresults.csv")
 
 glimpse(myresults)
 
-#convert impressions and clicks to numberic, creation date to date format 
+#convert impressions and clicks to numberic, dates to date format
+#also pull out y, m, d from dates and trim document_name to remove path itself
 myresults_formatted <- myresults %>% 
   mutate(
     ad_impressions = parse_number(ad_impressions), #use readr's parse_number to handle commas in text
@@ -90,7 +91,8 @@ myresults_formatted <- myresults %>%
     ad_creation_year = year(ad_creation_date),
     ad_creation_month = month(ad_creation_date),
     ad_creation_day = day(ad_creation_date),
-    ad_end_date = mdy_hms(ad_end_date)
+    ad_end_date = mdy_hms(ad_end_date),
+    document_name = str_sub(document_name, 8, 50)
   )
 
 #handle ocassional "None" in ad spend instead of a zero/blank
