@@ -132,6 +132,7 @@ myresults_formatted <- joined %>%
          ad_end_date,
          target_age,
          target_location,
+         location_country,
          location_state1,
          location_state2,
          location_state3,
