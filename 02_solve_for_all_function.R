@@ -113,19 +113,36 @@ myresults_formatted <- myresults_formatted %>%
   )
 
 
-#attempt to isolate STATES in location ####
-test1 <- myresults_formatted %>% 
-  mutate(
-    currency = currency_vector
-  )
+# isolate STATES and CITIES in location ####
+# by joining with a hand-rolled lookup table
+location_lookup <- read_csv("location_lookup.csv", 
+                            col_types = cols(rank = col_skip()))
 
-
-
+#join
+joined <- left_join(myresults_formatted, location_lookup)
 
 # move currency column next to ad spend, year month and day next to date
-myresults_formatted <- myresults_formatted %>% 
-  select(1:7, currency, ad_creation_date, ad_creation_year, ad_creation_month,
-        ad_creation_day, everything())
+myresults_formatted <- joined %>% 
+  select(1:7, 
+         currency, 
+         ad_creation_date, 
+         ad_creation_year, 
+         ad_creation_month,
+         ad_creation_day, 
+         ad_end_date,
+         target_age,
+         target_location,
+         location_state1,
+         location_state2,
+         location_state3,
+         location_state4,
+         location_state5,
+         location_city1,
+         location_city2,
+         location_city3,
+         location_city4,
+         location_city5,
+         everything())
 
 #write to file
 write_csv(myresults_formatted, "myresults_formatted.csv")
