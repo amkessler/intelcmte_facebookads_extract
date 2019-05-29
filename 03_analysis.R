@@ -55,3 +55,39 @@ data %>%
   group_by(ad_creation_year, ad_creation_month) %>% 
   summarise(num_ads = n(), sum_impressions = sum(ad_impressions, na.rm = TRUE)) %>% 
   arrange(ad_creation_year, ad_creation_month)
+
+
+
+### aiming to see if state-by-state spending can be compiled ####
+names(data)
+
+forstates <- data %>% 
+  select(ad_spend,
+         location_state1,
+         location_state2,
+         location_state3,
+         location_state4,
+         location_state5) %>% 
+  mutate(numads = 1)
+
+# 
+# forstates %>% 
+#   gather(key = state, value = ad_spend, 2:6, na.rm = FALSE)
+
+
+tidystates <- forstates %>% 
+  mutate(
+    statecombo = paste0(location_state1, ",", location_state2, ",", location_state3, ",", location_state4, ",", location_state5)
+  ) %>% 
+  select(numads, ad_spend, statecombo) %>% 
+  separate_rows(statecombo)
+
+tidystates
+
+#group by each state's ad count and spending
+tidystates %>% 
+  filter(statecombo != "NA") %>% 
+  group_by(statecombo) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE)) 
+
+
