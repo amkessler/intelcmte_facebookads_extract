@@ -112,6 +112,16 @@ myresults_formatted <- myresults_formatted %>%
     ad_spend = parse_number(ad_spend)
   )
 
+
+#attempt to isolate STATES in location ####
+test1 <- myresults_formatted %>% 
+  mutate(
+    currency = currency_vector
+  )
+
+
+
+
 # move currency column next to ad spend, year month and day next to date
 myresults_formatted <- myresults_formatted %>% 
   select(1:7, currency, ad_creation_date, ad_creation_year, ad_creation_month,

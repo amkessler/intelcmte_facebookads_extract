@@ -29,7 +29,7 @@ data %>%
 
 data %>% 
   count(target_location) %>% 
-  arrange(desc(n))
+  arrange(desc(n)) 
 
 data %>% 
   count(target_pplwhomatch) %>% 
