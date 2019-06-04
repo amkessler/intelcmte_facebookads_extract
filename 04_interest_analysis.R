@@ -34,9 +34,16 @@ tidyinterests <- data %>%
   
 
 #clean out precedors like interest: and politics:
-tidyinterests
+tidyinterests %>% 
+  mutate(
+    match = str_trim(str_remove_all(target_pplwhomatch, ".*:"))
+  )
 
-tidyinterests
+
+
+
+
+
 
 
 tidyinterests %>% 
