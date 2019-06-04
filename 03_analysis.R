@@ -63,6 +63,7 @@ names(data)
 
 forstates <- data %>% 
   select(ad_spend,
+         
          location_state1,
          location_state2,
          location_state3,
@@ -91,3 +92,45 @@ tidystates %>%
   summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE)) 
 
 
+### BY STATE AND YEAR ####
+
+### aiming to see if state-by-state spending can be compiled ####
+names(data)
+
+forstates_timeline <- data %>% 
+  select(ad_spend,
+         ad_creation_year,
+         ad_creation_month,
+         location_state1,
+         location_state2,
+         location_state3,
+         location_state4,
+         location_state5) %>% 
+  mutate(numads = 1)
+
+# 
+# forstates %>% 
+#   gather(key = state, value = ad_spend, 2:6, na.rm = FALSE)
+
+
+tidystates_timeline <- forstates_timeline %>% 
+  mutate(
+    statecombo = paste0(location_state1, ",", location_state2, ",", location_state3, ",", location_state4, ",", location_state5)
+  ) %>% 
+  select(numads, ad_spend, ad_creation_year, ad_creation_month, statecombo) %>% 
+  separate_rows(statecombo)
+
+tidystates_timeline
+
+#group by each state's ad count and spending
+tidystates_timeline %>% 
+  filter(statecombo != "NA") %>% 
+  group_by(statecombo, ad_creation_year, ad_creation_month) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE))
+
+#write to file
+tidystates_timeline %>% 
+  filter(statecombo != "NA") %>% 
+  group_by(statecombo, ad_creation_year, ad_creation_month) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE)) %>% 
+  write_csv("states_bymonth.csv")
