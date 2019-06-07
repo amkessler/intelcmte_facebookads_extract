@@ -154,9 +154,22 @@ forinterests_timeline <- data %>%
 #   gather(key = state, value = ad_spend, 2:6, na.rm = FALSE)
 
 
-tidyinterests_timeline <- forinterests_timeline %>% 
-  mutate(target_pplwhomatch = str_squish(target_pplwhomatch)) %>% 
-  separate_rows(target_pplwhomatch, sep = ",")
+interests_working <- forinterests_timeline %>% 
+  mutate(target_pplwhomatch = str_squish(target_pplwhomatch))
+
+
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Interests: ")
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Behaviors: ")
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "School: ")
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Multicultural Affinity: ")
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Friends of connections: ")
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Politics: ")
+  
+tidyinterests_timeline <- interests_working %>% 
+  separate_rows(target_pplwhomatch, sep = ",") %>% 
+  mutate(
+    target_pplwhomatch = str_squish(target_pplwhomatch)
+  )
 
 tidyinterests_timeline
 
