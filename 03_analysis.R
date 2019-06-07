@@ -94,7 +94,6 @@ tidystates %>%
 
 ### BY STATE AND YEAR ####
 
-### aiming to see if state-by-state spending can be compiled ####
 names(data)
 
 forstates_timeline <- data %>% 
@@ -134,3 +133,41 @@ tidystates_timeline %>%
   group_by(statecombo, ad_creation_year, ad_creation_month) %>% 
   summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE)) %>% 
   write_csv("states_bymonth.csv")
+
+
+
+
+#*********************************************************************
+###### ANALYZING INTERESTS / PEOPLE WHO MATCH CHARACTERISTICS ########
+
+forinterests_timeline <- data %>% 
+  select(ad_creation_year,
+         ad_creation_month,
+         target_pplwhomatch) %>% 
+  mutate(numads = 1)
+
+
+# forinterests_timeline$ad_targeting_fulltext
+
+# 
+# forstates %>% 
+#   gather(key = state, value = ad_spend, 2:6, na.rm = FALSE)
+
+
+tidyinterests_timeline <- forinterests_timeline %>% 
+  mutate(target_pplwhomatch = str_squish(target_pplwhomatch)) %>% 
+  separate_rows(target_pplwhomatch, sep = ",")
+
+tidyinterests_timeline
+
+#group by each state's ad count and spending
+tidyinterests_timeline %>% 
+  filter(target_pplwhomatch != "NA",
+         target_pplwhomatch != "") %>% 
+  group_by(target_pplwhomatch, ad_creation_year, ad_creation_month) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  arrange(ad_creation_year, ad_creation_month, desc(ad_count)) %>% 
+  View()
+
+
