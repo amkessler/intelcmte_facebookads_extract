@@ -23,7 +23,7 @@ glimpse(data)
 
 
 
-### aiming to see if state-by-state spending can be compiled ####
+### do interest targeting through people who match field ####
 names(data)
 
 tidyinterests <- data %>% 
@@ -56,4 +56,24 @@ tidystates %>%
   group_by(statecombo) %>% 
   summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE)) 
 
+
+
+### pull out interests from fulltext targeting
+
+working <- data %>% 
+  select(ad_targeting_fulltext) %>% 
+  mutate(
+    numads = 1,
+    fulltext = str_squish(ad_targeting_fulltext)
+    ) %>% 
+  select(-ad_targeting_fulltext)
+
+working %>% 
+  mutate(
+    ft_interests = if_else(
+      str_detect(fulltext, "Interests:"),
+      str_trim(gsub(".*Interests\\s*|Age.*", "", fulltext)),
+      "")    
+  ) %>% 
+  View()
 
