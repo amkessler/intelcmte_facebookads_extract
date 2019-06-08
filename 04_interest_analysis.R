@@ -23,7 +23,10 @@ glimpse(data)
 
 
 
-### do interest targeting through people who match field ####
+
+#............................................
+### INTEREST TARGETING BREAKDOWNS ####
+
 names(data)
 
 tidyinterests <- data %>% 
@@ -58,7 +61,7 @@ tidystates %>%
 
 
 
-### pull out interests from fulltext targeting
+### pull out interests from fulltext targeting ####
 
 working <- data %>% 
   select(ad_targeting_fulltext) %>% 
@@ -77,3 +80,46 @@ working %>%
   ) %>% 
   View()
 
+
+
+#### COMBINE BOTH METHODS ####
+
+glimpsenames(data)
+
+#first handle people who match field
+working_combo <- data %>% 
+  select(target_pplwhomatch, ad_targeting_fulltext) %>% 
+  mutate(
+    numads = 1,
+    pplwhomatch = str_squish(target_pplwhomatch),
+    pplwhomatch = str_trim(str_remove_all(target_pplwhomatch, ".*:"))
+  )
+
+#then handle full text targeting field
+working_combo <- working_combo %>% 
+  mutate(
+    fulltext = str_squish(ad_targeting_fulltext),
+    ft_interests = if_else(
+      str_detect(fulltext, "Interests:"),
+      str_trim(gsub(".*Interests\\s*|Age.*", "", fulltext)),
+      "")  
+  )
+
+
+
+working <- data %>% 
+  select(ad_targeting_fulltext) %>% 
+  mutate(
+    numads = 1,
+    fulltext = str_squish(ad_targeting_fulltext)
+  ) %>% 
+  select(-ad_targeting_fulltext)
+
+working %>% 
+  mutate(
+    ft_interests = if_else(
+      str_detect(fulltext, "Interests:"),
+      str_trim(gsub(".*Interests\\s*|Age.*", "", fulltext)),
+      "")    
+  ) %>% 
+  View()
