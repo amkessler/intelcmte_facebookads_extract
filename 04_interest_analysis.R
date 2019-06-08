@@ -115,3 +115,10 @@ working_combo <- working_combo %>%
     pplwhomatch = str_squish(pplwhomatch),
     ft_interests = str_squish(ft_interests)
   )
+
+#look for instances where pplwhomatch is blank but ft_interests is not
+working_combo %>% 
+  filter(pplwhomatch == "" | is.na(pplwhomatch),
+         ft_interests != "" | !is.na(ft_interests)
+         )
+  
