@@ -95,7 +95,10 @@ working_combo <- data %>%
     pplwhomatch = str_trim(str_remove_all(target_pplwhomatch, ".*:"))
   )
 
-#then handle full text targeting field
+#ad unique ID column to help in later steps
+working_combo <- rowid_to_column(working_combo, "ID")
+
+#handle full text targeting field
 working_combo <- working_combo %>% 
   mutate(
     fulltext = str_squish(ad_targeting_fulltext),
@@ -105,21 +108,10 @@ working_combo <- working_combo %>%
       "")  
   )
 
-
-
-working <- data %>% 
-  select(ad_targeting_fulltext) %>% 
+#clean up and isolate the new columns
+working_combo <- working_combo %>% 
+  select(ID, numads, pplwhomatch, ft_interests) %>% 
   mutate(
-    numads = 1,
-    fulltext = str_squish(ad_targeting_fulltext)
-  ) %>% 
-  select(-ad_targeting_fulltext)
-
-working %>% 
-  mutate(
-    ft_interests = if_else(
-      str_detect(fulltext, "Interests:"),
-      str_trim(gsub(".*Interests\\s*|Age.*", "", fulltext)),
-      "")    
-  ) %>% 
-  View()
+    pplwhomatch = str_squish(pplwhomatch),
+    ft_interests = str_squish(ft_interests)
+  )
