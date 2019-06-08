@@ -34,22 +34,20 @@ tidyinterests <- data %>%
   
 
 #clean out precedors like interest: and politics:
-tidyinterests %>% 
+tidyinterests <- tidyinterests %>% 
   mutate(
     match = str_trim(str_remove_all(target_pplwhomatch, ".*:"))
   )
 
 
 
-
-
-
-
-
+#count num of ads for each match label
 tidyinterests %>% 
-  count(target_pplwhomatch) %>% 
+  count(match) %>% 
   arrange(desc(n)) %>% 
   View()
+
+
 
 
 #group by each state's ad count and spending
