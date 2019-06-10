@@ -5,6 +5,7 @@ library(pdftools)
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(writexl)
 
 
 #### run function in step 02 to handle processing of extracting from the pdf file
@@ -164,6 +165,7 @@ interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_
 interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Multicultural Affinity: ")
 interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Friends of connections: ")
 interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Politics: ")
+interests_working$target_pplwhomatch <- str_remove_all(interests_working$target_pplwhomatch, "Jr.")
   
 tidyinterests_timeline <- interests_working %>% 
   separate_rows(target_pplwhomatch, sep = ",") %>% 
@@ -173,7 +175,19 @@ tidyinterests_timeline <- interests_working %>%
 
 tidyinterests_timeline
 
-#group by each state's ad count and spending
+
+#group by each targets's total ad count
+tidyinterests_timeline %>% 
+  filter(target_pplwhomatch != "NA",
+         target_pplwhomatch != "") %>% 
+  group_by(target_pplwhomatch) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  arrange(desc(ad_count)) %>% 
+  View()
+
+
+#group by each targets's total ad count by MONTH
 tidyinterests_timeline %>% 
   filter(target_pplwhomatch != "NA",
          target_pplwhomatch != "") %>% 
@@ -182,5 +196,28 @@ tidyinterests_timeline %>%
   ungroup() %>% 
   arrange(ad_creation_year, ad_creation_month, desc(ad_count)) %>% 
   View()
+
+
+#write to files
+#group by each targets's total ad count
+tidyinterests_timeline %>% 
+  filter(target_pplwhomatch != "NA",
+         target_pplwhomatch != "") %>% 
+  group_by(target_pplwhomatch) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  arrange(desc(ad_count)) %>% 
+  write_xlsx("peoplewhomatch_totals.xlsx")
+
+
+#group by each targets's total ad count by MONTH
+tidyinterests_timeline %>% 
+  filter(target_pplwhomatch != "NA",
+         target_pplwhomatch != "") %>% 
+  group_by(target_pplwhomatch, ad_creation_year, ad_creation_month) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  ungroup() %>% 
+  arrange(ad_creation_year, ad_creation_month, desc(ad_count)) %>% 
+  write_xlsx("peoplewhomatch_bymonth.xlsx")
 
 
