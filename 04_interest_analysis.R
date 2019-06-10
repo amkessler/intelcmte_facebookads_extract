@@ -82,13 +82,17 @@ working %>%
 
 
 
+
 #### COMBINE BOTH METHODS ####
 
 glimpse(data)
 
 #first handle people who match field
 working_combo <- data %>% 
-  select(target_pplwhomatch, ad_targeting_fulltext) %>% 
+  select(ad_creation_year,
+         ad_creation_month,
+         target_pplwhomatch, 
+         ad_targeting_fulltext) %>% 
   mutate(
     numads = 1,
     pplwhomatch = str_squish(target_pplwhomatch),
@@ -110,7 +114,12 @@ working_combo <- working_combo %>%
 
 #clean up and isolate the new columns
 working_combo <- working_combo %>% 
-  select(ID, numads, pplwhomatch, ft_interests) %>% 
+  select(ID, 
+         numads, 
+         ad_creation_year,
+         ad_creation_month,
+         pplwhomatch, 
+         ft_interests) %>% 
   mutate(
     pplwhomatch = str_squish(pplwhomatch),
     ft_interests = str_squish(ft_interests)
@@ -134,7 +143,11 @@ working_combo <- working_combo %>%
 
 #tidy format from the interests combined column
 working_tidycombo <- working_combo %>% 
-  select(ID, numads, interests_combined) %>% 
+  select(ID, 
+         numads, 
+         ad_creation_year,
+         ad_creation_month,
+         interests_combined) %>% 
   separate_rows(interests_combined, sep = ",") %>% 
   mutate(
     interests_combined = str_squish(interests_combined)
@@ -163,4 +176,10 @@ working_tidycombo %>%
   summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
   arrange(desc(ad_count))
 
+
+#group by each target term's total ad count BY MONTH
+working_tidycombo %>% 
+  group_by(ad_creation_year, ad_creation_month, interests_combined) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  arrange(ad_creation_year, ad_creation_month, desc(ad_count))
 
