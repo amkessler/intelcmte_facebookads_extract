@@ -47,17 +47,7 @@ tidyinterests <- tidyinterests %>%
 #count num of ads for each match label
 tidyinterests %>% 
   count(match) %>% 
-  arrange(desc(n)) %>% 
-  View()
-
-
-
-
-#group by each state's ad count and spending
-tidystates %>% 
-  filter(statecombo != "NA") %>% 
-  group_by(statecombo) %>% 
-  summarise(ad_count = sum(numads, na.rm = TRUE), ad_spending = sum(ad_spend, na.rm = TRUE)) 
+  arrange(desc(n)) 
 
 
 
@@ -77,9 +67,7 @@ working %>%
       str_detect(fulltext, "Interests:"),
       str_trim(gsub(".*Interests\\s*|Age.*", "", fulltext)),
       "")    
-  ) %>% 
-  View()
-
+  ) 
 
 
 

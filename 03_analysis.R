@@ -194,30 +194,4 @@ tidyinterests_timeline %>%
   group_by(target_pplwhomatch, ad_creation_year, ad_creation_month) %>% 
   summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
   ungroup() %>% 
-  arrange(ad_creation_year, ad_creation_month, desc(ad_count)) %>% 
-  View()
-
-
-#write to files
-#group by each targets's total ad count
-tidyinterests_timeline %>% 
-  filter(target_pplwhomatch != "NA",
-         target_pplwhomatch != "") %>% 
-  group_by(target_pplwhomatch) %>% 
-  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  arrange(desc(ad_count)) %>% 
-  write_xlsx("peoplewhomatch_totals.xlsx")
-
-
-#group by each targets's total ad count by MONTH
-tidyinterests_timeline %>% 
-  filter(target_pplwhomatch != "NA",
-         target_pplwhomatch != "") %>% 
-  group_by(target_pplwhomatch, ad_creation_year, ad_creation_month) %>% 
-  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
-  ungroup() %>% 
-  arrange(ad_creation_year, ad_creation_month, desc(ad_count)) %>% 
-  write_xlsx("peoplewhomatch_bymonth.xlsx")
-
-
+  arrange(ad_creation_year, ad_creation_month, desc(ad_count)) 
