@@ -156,3 +156,11 @@ working_tidycombo <- working_tidycombo %>%
   mutate(
     interests_combined = str_trim(interests_combined)
   )
+
+#group by each target term's total ad count 
+working_tidycombo %>% 
+  group_by(interests_combined) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  arrange(desc(ad_count))
+
+
