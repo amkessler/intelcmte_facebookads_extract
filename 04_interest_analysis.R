@@ -5,6 +5,7 @@ library(pdftools)
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(writexl)
 
 
 #### run function in step 02 to handle processing of extracting from the pdf file
@@ -171,3 +172,20 @@ working_tidycombo %>%
   summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
   arrange(ad_creation_year, ad_creation_month, desc(ad_count))
 
+
+### writing to files #### 
+
+#group by each target term's total ad count 
+working_tidycombo %>% 
+  group_by(interests_combined) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  arrange(desc(ad_count)) %>% 
+  write_xlsx("output/interests_totalcounts.xlsx")
+
+
+#group by each target term's total ad count BY MONTH
+working_tidycombo %>% 
+  group_by(ad_creation_year, ad_creation_month, interests_combined) %>% 
+  summarise(ad_count = sum(numads, na.rm = TRUE)) %>% 
+  arrange(ad_creation_year, ad_creation_month, desc(ad_count)) %>% 
+  write_xlsx("output/interests_bymonthcounts.xlsx")
