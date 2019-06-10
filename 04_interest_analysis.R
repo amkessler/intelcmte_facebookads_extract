@@ -84,7 +84,7 @@ working %>%
 
 #### COMBINE BOTH METHODS ####
 
-glimpsenames(data)
+glimpse(data)
 
 #first handle people who match field
 working_combo <- data %>% 
@@ -118,7 +118,41 @@ working_combo <- working_combo %>%
 
 #look for instances where pplwhomatch is blank but ft_interests is not
 working_combo %>% 
-  filter(pplwhomatch == "" | is.na(pplwhomatch),
-         ft_interests != "" | !is.na(ft_interests)
-         )
+  filter(pplwhomatch == "",
+         ft_interests != "")
   
+#create column combining interest columns
+working_combo <- working_combo %>% 
+  mutate(
+    interests_combined = if_else(pplwhomatch == "", ft_interests, pplwhomatch)
+  )
+
+
+
+#### GROUPING THE RESULTS ####
+
+
+#tidy format from the interests combined column
+working_tidycombo <- working_combo %>% 
+  select(ID, numads, interests_combined) %>% 
+  separate_rows(interests_combined, sep = ",") %>% 
+  mutate(
+    interests_combined = str_squish(interests_combined)
+  )
+  
+#clean up by removing certain titles
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "Interests: ")
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "Behaviors: ")
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "School: ")
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "Multicultural Affinity: ")
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "Friends of connections: ")
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "Politics: ")
+working_tidycombo$interests_combined <- str_remove_all(working_tidycombo$interests_combined, "Jr.")
+working_tidycombo$interests_combined <- str_remove(working_tidycombo$interests_combined, ":")
+
+#remove blank rows
+working_tidycombo <- working_tidycombo %>% 
+  filter(interests_combined != "") %>% 
+  mutate(
+    interests_combined = str_trim(interests_combined)
+  )
